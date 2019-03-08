@@ -1,9 +1,11 @@
 import { observe } from './observer'
+import Compile from './compile'
 
 const SimpleVue = function(option) {
   this.data = option.data
   Object.keys(this.data).forEach((key) => this.proxyKeys(key))
-  observe(option.data)
+  observe(this.data)
+  new Compile(this, option.el)
 }
 
 SimpleVue.prototype = {

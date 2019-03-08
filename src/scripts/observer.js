@@ -12,15 +12,20 @@ Observer.prototype = {
   bindInterceptor: function(key, data) {
     let val = data[key]
     observe(val)
+    const dep = new Dep()
     Object.defineProperty(data, key, {
       enumerable: true,
       configurable: true,
       get: function getter() {
+        if (Dep.target) {
+          dep.add(Dep.target)
+        }
         return val
       },
       set: function setter(newVal) {
         if (newVal !== val) {
           val = newVal
+          dep.notify()
         }
       }
     })

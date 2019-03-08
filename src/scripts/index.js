@@ -1,7 +1,7 @@
 import SimpleVue from './vue'
 
 const vue = new SimpleVue({
-  el: '#el',
+  el: '#app',
   data: {
     title: 'title',
     content: 'content'
@@ -10,4 +10,3 @@ const vue = new SimpleVue({
 
 const test = vue.title
 vue.title = 'new Title'
-console.log(test)
