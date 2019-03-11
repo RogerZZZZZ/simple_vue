@@ -1,17 +1,18 @@
 import { Dep } from './observer'
+import { getDataFromChain } from './compile'
 
-const Watcher = function(vm, node, exp, callback) {
-  this.vm = vm
+const Watcher = function(node, vm, exp, cb) {
   this.node = node
+  this.update = cb
   this.exp = exp
-  this.update = callback
+  this.vm = vm
   this.init()
 }
 
 Watcher.prototype = {
   init: function() {
     Dep.target = this
-    const tigger = this.vm[this.exp]
+    const val = getDataFromChain(this.vm, this.exp)
     Dep.target = null
   },
 }

@@ -1,11 +1,11 @@
 import { observe } from './observer'
 import Compile from './compile'
 
-const SimpleVue = function(option) {
-  this.data = option.data
+const SimpleVue = function(options) {
+  this.data = options.data
   Object.keys(this.data).forEach((key) => this.proxyKeys(key))
   observe(this.data)
-  new Compile(this, option.el)
+  new Compile(this, options.el)
 }
 
 SimpleVue.prototype = {

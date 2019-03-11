@@ -1,20 +1,18 @@
-const Observer = function(el) {
-  this.el = el
+const Observer = function(data) {
+  this.data = data
   this.init()
 }
 
 Observer.prototype = {
   init: function() {
-    Object.keys(this.el).forEach((key) => {
-      this.bindInterceptor(key, this.el, this.el[key])
-    })
+    Object.keys(this.data).forEach(key => this.walk(this.data, key))
   },
-  bindInterceptor: function(key, data) {
-    let val = data[key]
-    observe(val)
+  walk: function(el, exp) {
     const dep = new Dep()
-    Object.defineProperty(data, key, {
-      enumerable: true,
+    let val = el[exp]
+    observe(el[exp])
+    Object.defineProperty(el, exp, {
+      enumerable: false,
       configurable: true,
       get: function getter() {
         if (Dep.target) {
@@ -23,36 +21,36 @@ Observer.prototype = {
         return val
       },
       set: function setter(newVal) {
-        if (newVal !== val) {
-          val = newVal
-          dep.notify()
+        if (val === newVal) {
+          return
         }
+        val = newVal
+        dep.notify()
       }
     })
-  }
+  },
 }
 
 export const observe = function(el) {
-  if (!el || typeof el !== 'object') {
-    return
+  if (el === null || typeof el !== 'object') {
+    return null
   }
-
-  new Observer(el)
+  return new Observer(el)
 }
 
-export const Dep = function() {
-  this.deps = []
+export const Dep = function () {
+  this.queue = []
 }
 
 Dep.prototype = {
   add: function(watcher) {
-    this.deps.push(watcher)
+    this.queue.push(watcher)
   },
   notify: function() {
-    this.deps.forEach((dep) => {
-      dep.update()
-    })
+    this.queue.forEach(watcher => watcher.update())
   }
 }
 
 Dep.target = null
+
+export default Observer
